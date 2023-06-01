@@ -42,7 +42,7 @@ if ($_SESSION['user'] == 0) {
 <body>
     <div class="container mt-5 p-5">
         <div class="row ">
-            <div class="col-sm-6 offset-sm-3 text-center">
+            <div class="col-sm-6 offset-sm-3 text-center bg-dark">
                 <p>Name Last Name</p>
             </div>
         </div>

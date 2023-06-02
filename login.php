@@ -35,8 +35,10 @@ session_start();
 
         $kontrol = $baglan->query("SELECT * FROM users WHERE email='$login_email' AND password='$login_password' ");
         $son_kontrol = $kontrol->fetchAll(PDO::FETCH_ASSOC);
-        if ($son_kontrol) {
-            header('Location: home');
+        if (isset($son_kontrol)) {
+            if ($son_kontrol) {
+                header('Location: home');
+            }
         }
     }
     ?>
@@ -53,13 +55,15 @@ session_start();
         <div class="row">
             <div class="col-sm-6 offset-sm-3 shadow shadow-3-soft rounded-3 p-4 pt-0">
                 <?php
-                if (!$son_kontrol) { ?>
-                    <div class="row mt-3">
-                        <div class="col-sm-6 offset-sm-3 alert alert-danger text-center">
-                            <h6>Kullanıcı adı veya şifre hatalı!</h6>
+                if (isset($son_kontrol)) {
+                    if (!$son_kontrol) {  ?>
+                        <div class="row mt-3">
+                            <div class="col-sm-6 offset-sm-3 alert alert-danger text-center">
+                                <h6>Kullanıcı adı veya şifre hatalı!</h6>
+                            </div>
                         </div>
-                    </div>
                 <?
+                    }
                 }
                 ?>
 

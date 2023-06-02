@@ -2,13 +2,20 @@
 <html lang="en">
 <?php
 session_start();
+include('connect.php');
+
+$message = '';
+
 ?>
 
 <head>
+    <title>
+        Log in - Register
+    </title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
     <!--  BOOTSTRAP v5.2.3 -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -18,27 +25,23 @@ session_start();
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
 
 
-    <?
-    $baglan = new PDO("mysql:host=localhost;dbname=chatapp", 'root', 'mysql', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
-    ?>
-    <title>
-        Log in - Register
-    </title>
+
 
     <?php
 
     if (isset($_POST['login'])) {
         $_SESSION['user'] = 1;
-        $login_email = $_POST['login_email'];
+
+        $login_username = $_POST['login_username'];
         $login_password = $_POST['login_pass'];
 
-        $kontrol = $baglan->query("SELECT * FROM users WHERE email='$login_email' AND password='$login_password' ");
+        $kontrol = $baglan->query("SELECT * FROM users WHERE username='$login_username' AND password='$login_password' ");
         $son_kontrol = $kontrol->fetchAll(PDO::FETCH_ASSOC);
-        if (isset($son_kontrol)) {
-            if ($son_kontrol) {
-                header('Location: home');
-            }
+        if ($son_kontrol) {
+            $q= $baglan->query("SELECT * FROM users WHERE username='$login_username' AND password='$login_password'");
+            $d = $q->fetch(PDO::FETCH_ASSOC);
+            header('Location: home?user_id='. $d['user_id'] .'');
         }
     }
     ?>
@@ -53,13 +56,13 @@ session_start();
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6 offset-sm-3 shadow shadow-3-soft rounded-3 p-4 pt-0">
+            <div class="col-sm-6 offset-sm-3 shadow shadow-3-soft rounded-3 p-4 ">
                 <?php
                 if (isset($son_kontrol)) {
-                    if (!$son_kontrol) {  ?>
+                    if (!$son_kontrol) { ?>
                         <div class="row mt-3">
                             <div class="col-sm-6 offset-sm-3 alert alert-danger text-center">
-                                <h6>Kullanıcı adı veya şifre hatalı!</h6>
+                                <h6>Wrong username or password</h6>
                             </div>
                         </div>
                 <?
@@ -71,17 +74,20 @@ session_start();
                     <div class="form-group">
                         <div class="row mt-1">
                             <div class="col-sm-12">
-                                <input type="text" name="login_email" placeholder="E-mail*" class="form-control">
+                                <input type="text" name="login_username" required placeholder="Username*" class="form-control">
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-sm-12">
-                                <input type="password" name="login_pass" placeholder="Password*" class="form-control">
+                                <input type="password" name="login_pass" required placeholder="Password*" class="form-control">
                             </div>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-sm-6">
+                            <?php 
+                           
+                            ?>
                             <button class="btn btn-success form-control" type="submit" name="login">
                                 Log in
                             </button>

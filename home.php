@@ -3,9 +3,15 @@
 
 <?php
 session_start();
+include('connect.php');
+
+$user_id = $_GET['user_id'];
+$_SESSION['user_id'] = $_GET['user_id'];
+
+$u_q = $baglan->query("SELECT * FROM users WHERE user_id = '$user_id' ");
+$user = $u_q->fetch(PDO::FETCH_ASSOC);
 
 
-$baglan = new PDO("mysql:host=localhost;dbname=chatapp", 'root', 'mysql', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 if ($_SESSION['user'] == 0) {
     header('Location:login.php');
 } elseif ($_SESSION['user'] == 1) {
@@ -30,89 +36,78 @@ if ($_SESSION['user'] == 0) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
 
-    <!-- JQUERY DAHİL ETME OPERASYONU: -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-
 </head>
 <style>
-    body{
+    body {
         background-color: #f8f8f8;
     }
 </style>
+
 <body>
     <div class="container mt-5 p-5">
-        <div class="row ">
-            <div class="col-sm-6 offset-sm-3 text-center bg-dark">
-                <p>Name Last Name</p>
+        <div class="row mb-4">
+            <div class="col-sm-6 text-center">
+                <p>Welcome, <strong><?php echo $user['firstname'] . " " . $user['lastname']; ?></strong></p>
+            </div>
+            <div class="col-sm-6 text-center">
+                <a class="btn btn-danger" href="logout">
+                    Log out
+                </a>
             </div>
         </div>
+
         <div class="row shadow shadow-4-soft rounded-3 p-3">
-            <div class="col-sm-3 shadow shadow-1-soft p-3 rounded-4">
-                <!-- Arama çubuğu -->
-                <div class="row">
-                    <div class="col-sm-3">
-                        <button class="btn btn-success form-control">
-                            <i class="fa fa-search text-white"></i>
-                        </button>
-                    </div>
-                    <div class="col-sm-9 p-0 m-0">
-                        <input type="text" placeholder="Search.." class="form-control">
-                    </div>
-                </div>
+            <div id="user_details" class="col-sm-12">
 
-                <!-- Kişiler listelenecek: -->
-                <div class="row mt-3">
-                    <h5 class="border-bottom">Other Friends</h5>
-                    <div class="col-sm-12">
-
-                        <div class="d-flex align-items-start">
-                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                <?php
-                                $users_sql = $baglan->query("SELECT * FROM users");
-                                $users = $users_sql->fetchAll(PDO::FETCH_ASSOC);
-                                foreach ($users as $user) { ?>
-                                    <button class="nav-link" id="v-pills-<?= $user['user_id'] ?>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<?= $user['user_id'] ?>" type="button" role="tab" aria-controls="v-pills-<?= $user['user_id'] ?>" aria-selected="false">
-                                        <h5>
-                                            <?php echo $user['firstname'] . " " . $user['lastname']; ?>
-                                        </h5>
-                                    </button>
-                                <? }
-                                ?>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- KİŞİLERE ÖZEL İÇERİK KISMI: MESAJLAR -->
-            <div class="col-sm-9 p-5 pt-0 bg-white">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="tab-content" id="v-pills-tabContent">
-                            <?php
-                            $users_sql = $baglan->query("SELECT * FROM users");
-                            $users = $users_sql->fetchAll(PDO::FETCH_ASSOC);
-                            foreach ($users as $user) { ?>
-                                <div class="tab-pane fade" id="v-pills-<?= $user['user_id'] ?>" role="tabpanel" aria-labelledby="v-pills-<?= $user['user_id'] ?>-tab" tabindex="0">
-                                    <?= $user['user_id'] ?> id'li kişinin chatbox'u
-                                </div>
-                            <? }
-                            ?>
-
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
     </div>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript">
-    </script>
+
+
 </body>
+<!-- JQUERY DAHİL ETME OPERASYONU: -->
+<script src="js/jquery-3.7.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        fetch_user();
+        setInterval(function() {
+            update_last_activity();
+            fetch_user();
+        }, 1000);
+
+        function fetch_user() {
+            $.ajax({
+                url: "fetch-user.php",
+                method: "POST",
+                success: function(data) {
+                    $('#user_details').html(data);
+                }
+            })
+        }
+
+        function update_last_activity() {
+            $.ajax({
+                url: "update-last-activity.php",
+                success: function() {
+
+                }
+            })
+        }
+
+        function make_chat_dialog_box(to_user_id, to_user_name){
+
+            var modal_content = '<div class="user_dialog modal" id="user_dialog_'+to_user_id+'"  title="You have chat with'+to_user_name+'"';
+
+            modal_content += '<div class="modal-dialog chat_history" data-touserid="'+to_user_id+'" id="chat_history_'+to_user_id+'"> <div class="modal-content"> <div class="modal-body"> ';
+
+
+        }
+        
+
+    });
+</script>
+
+div
 
 </html>

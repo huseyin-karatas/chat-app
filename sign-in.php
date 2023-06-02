@@ -3,6 +3,7 @@
 <html lang="en">
 <?php
 session_start();
+include('connect.php');
 ?>
 
 <head>
@@ -20,10 +21,7 @@ session_start();
 
 
 
-    <?
-    $baglan = new PDO("mysql:host=localhost;dbname=chatapp", 'root', 'mysql', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
-    ?>
     <title>
         Register
     </title>
@@ -42,13 +40,10 @@ session_start();
         $add_user = $baglan->query("INSERT INTO users (user_id, username, password, firstname, lastname, email) 
         VALUES ('$new_user_id','$new_user_username','$new_user_password','$new_user_firstname','$new_user_lastname','$new_user_email') ");
 
-      
+
         if ($add_user) {
-            header('Location: home');
+            header('Location: home?user_id='. $new_user_id .'');
         }
-
-
-       
     }
 
     ?>

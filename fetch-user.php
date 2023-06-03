@@ -13,12 +13,12 @@ $result = $statement->fetchAll();
 
 
 
-$output = ' <table class="table table-bordered table-striped">
+$output = ' <table class="table  table-striped">
   <thead>
     <tr>
-      <th scope="col">Users</th>
-      <th scope="col">Status</th>
-      <th scope="col">Action</th>
+      <th scope="col" class="text-center">Users</th>
+      <th scope="col" class="text-center">Status</th>
+      <th scope="col" class="text-center">Action</th>
     </tr>
   </thead>';
 date_default_timezone_set('Turkey');
@@ -47,13 +47,14 @@ foreach ($result as $row) {
   $output .= '
     <tbody>
     <tr>
-      <td>' . $row['firstname'] . ' ' . $row['lastname'] . '</td>
-      <td> ' . $status . ' </td>
+      <td class="text-center">' . $row['firstname'] . ' ' . $row['lastname'] . '</td>
+      <td> <div class="row"><div class="col-sm-6 offset-sm-3"> ' . $status . ' </div></div> </td>
       <td>
 
-      <button type="button" class="btn btn-primary start_chat" data-bs-toggle="modal" data-bs-target="#user_dialog_' . $row['user_id'] . '" data-touserid="' . $row['user_id'] . '" data-tousername="' . $row['username'] . '">
-        Start Chat
-      </button>
+      <div class="row"><div class="col-sm-6 offset-sm-3">
+      <button type="button" class="btn btn-primary form-control start_chat" data-touserid="' . $row['user_id'] . '" data-tousername=" ' . $row['firstname'] . " " . $row['lastname'] . ' ">Start Chat</button>
+      </div></div>
+     
 
        
       </td>
@@ -64,3 +65,7 @@ foreach ($result as $row) {
 $output .= ' </tbody> </table>';
 
 echo $output;
+
+/* <button type="button" class="btn btn-primary start_chat" data-bs-toggle="modal" data-bs-target="#user_dialog_' . $row['user_id'] . '" data-touserid="' . $row['user_id'] . '" data-tousername="' . $row['username'] . '">
+Start Chat
+</button> */

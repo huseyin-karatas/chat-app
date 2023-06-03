@@ -56,8 +56,8 @@ if ($_SESSION['user'] == 0) {
             </div>
         </div>
 
-        <div class="row shadow shadow-4-soft rounded-3 p-3">
-            <div id="user_details" class="col-sm-12">
+        <div class="row  ">
+            <div id="user_details" class="col-sm-12 shadow shadow-4-soft rounded-3 p-0">
 
             </div>
         </div>
@@ -65,9 +65,13 @@ if ($_SESSION['user'] == 0) {
 
 
         <!-- Modal -->
-        <div class="modal fade" id="user_modal_details" tabindex="-1" aria-hidden="true">
 
+        <div class="row mt-5 ">
+            <div class="col-sm-8 offset-sm-2" id="user_model_details">
+
+            </div>
         </div>
+
 
 
 
@@ -79,6 +83,8 @@ if ($_SESSION['user'] == 0) {
 <script src="js/jquery-3.7.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+
+
         fetch_user();
         setInterval(function() {
             update_last_activity();
@@ -105,36 +111,42 @@ if ($_SESSION['user'] == 0) {
         }
 
         function make_chat_dialog_box(to_user_id, to_user_name) {
-
-            /* modal divi açıldı */
-            var modal_content = '<div class="user_dialog modal-dialog"  title="You have chat with' + to_user_name + '" ';
-
-            /* modal dialog > modal content > modal-body divleri açıldı. */
-            modal_content += '<div class="modal-content"  > <div class="modal-body"> ';
-
-
-            /* Chat kısmı burada. Modal-body kapatıldı. */
-            modal_content += ' <div class="row"><div class="col-sm-12"><div style="height:500px; width:100%" class="chat_history" data-touserid="' + to_user_id + '" id="chat_history_' + to_user_id + '"> </div> </div></div> </div>';
-
-            /* Mesja gönderme input kısmı. Modal-footer'da. Modal-footer da kapatıldı, modal-body de. Modal-content de.*/
-            modal_content += '<div class="modal-footer"><div class="form-group"><div class="row"><div class="col-sm-9"> <textarea name="chat_message_' + to_user_id + '" id="chat_message_' + to_user_id + '" class="form-control" ></textarea></div> <div class="col-sm-3"><button class="btn btn-success form-control" type="button" name="send_chat" id="' + to_user_id + '">Send</button></div> </div> </div> </div></div></div>';
-
-            $('$user_modal_details').html(modal_content);
-
+            var modal_content = '<div id="user_dialog_' + to_user_id + '" class="user_dialog shadow shadow-4-soft rounded-3 p-3" >';
+            modal_content += '<div class="modal-header"><h3> <i class="fas fa-comments-alt fa-2x"></i> You have chat with <strong class="mark">' + to_user_name + '</strong></h3></div> <div style="height:400px; border:1px solid #ccc; overflow-y: scroll; margin-bottom:24px; padding:16px;" class="chat_history" data-touserid="' + to_user_id + '" id="chat_history_' + to_user_id + '">';
+            modal_content += '</div>';
+            modal_content += '<div class="form-group">';
+            modal_content += '<textarea name="chat_message_' + to_user_id + '" id="chat_message_' + to_user_id + '" class="form-control"></textarea>';
+            modal_content += '</div><div class="form-group" align="right">';
+            modal_content += '<button type="button" name="send_chat" id="' + to_user_id + '" class="btn btn-success mt-3 send_chat">Send</button></div></div>';
+            $('#user_model_details').html(modal_content);
         }
 
         $(document).on('click', '.start_chat', function() {
             var to_user_id = $(this).data('touserid');
             var to_user_name = $(this).data('tousername');
             make_chat_dialog_box(to_user_id, to_user_name);
-
-
-            $('#user_dialog_' + to_user_id).dialog({
+            $("#user_dialog_" + to_user_id).dialog({
                 autoOpen: false,
                 width: 400
             });
-
             $('#user_dialog_' + to_user_id).dialog('open');
+        });
+
+        $(document).on('click', '.send_chat', function() {
+            var to_user_id = $(this).attr('id');
+            var chat_message = $('#chat_message_' + to_user_id).val();
+            $.ajax({
+                url: "insert_chat.php",
+                method: "POST",
+                data: {
+                    to_user_id: to_user_id,
+                    chat_message: chat_message
+                },
+                success: function(data) {
+                    $('#chat_message_' + to_user_id).val('');
+                    $('#chat_history_' + to_user_id).html(data);
+                }
+            })
         });
 
 

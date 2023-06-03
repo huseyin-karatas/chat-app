@@ -62,6 +62,15 @@ if ($_SESSION['user'] == 0) {
             </div>
         </div>
 
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="user_modal_details" tabindex="-1" aria-hidden="true">
+
+        </div>
+
+
+
     </div>
 
 
@@ -95,19 +104,43 @@ if ($_SESSION['user'] == 0) {
             })
         }
 
-        function make_chat_dialog_box(to_user_id, to_user_name){
+        function make_chat_dialog_box(to_user_id, to_user_name) {
 
-            var modal_content = '<div class="user_dialog modal" id="user_dialog_'+to_user_id+'"  title="You have chat with'+to_user_name+'"';
+            /* modal divi açıldı */
+            var modal_content = '<div class="user_dialog modal-dialog"  title="You have chat with' + to_user_name + '" ';
 
-            modal_content += '<div class="modal-dialog chat_history" data-touserid="'+to_user_id+'" id="chat_history_'+to_user_id+'"> <div class="modal-content"> <div class="modal-body"> ';
+            /* modal dialog > modal content > modal-body divleri açıldı. */
+            modal_content += '<div class="modal-content"  > <div class="modal-body"> ';
 
+
+            /* Chat kısmı burada. Modal-body kapatıldı. */
+            modal_content += ' <div class="row"><div class="col-sm-12"><div style="height:500px; width:100%" class="chat_history" data-touserid="' + to_user_id + '" id="chat_history_' + to_user_id + '"> </div> </div></div> </div>';
+
+            /* Mesja gönderme input kısmı. Modal-footer'da. Modal-footer da kapatıldı, modal-body de. Modal-content de.*/
+            modal_content += '<div class="modal-footer"><div class="form-group"><div class="row"><div class="col-sm-9"> <textarea name="chat_message_' + to_user_id + '" id="chat_message_' + to_user_id + '" class="form-control" ></textarea></div> <div class="col-sm-3"><button class="btn btn-success form-control" type="button" name="send_chat" id="' + to_user_id + '">Send</button></div> </div> </div> </div></div></div>';
+
+            $('$user_modal_details').html(modal_content);
 
         }
-        
+
+        $(document).on('click', '.start_chat', function() {
+            var to_user_id = $(this).data('touserid');
+            var to_user_name = $(this).data('tousername');
+            make_chat_dialog_box(to_user_id, to_user_name);
+
+
+            $('#user_dialog_' + to_user_id).dialog({
+                autoOpen: false,
+                width: 400
+            });
+
+            $('#user_dialog_' + to_user_id).dialog('open');
+        });
+
 
     });
 </script>
 
-div
+
 
 </html>
